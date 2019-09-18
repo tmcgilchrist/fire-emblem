@@ -1,7 +1,6 @@
-
 open Types
 open State
-
+open Js_of_ocaml
 
 (* drawing canvas width *)
 val canvas_width: float

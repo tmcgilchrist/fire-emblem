@@ -4,6 +4,7 @@ open Types
 open Room
 open Command
 open Charactermaker
+open Js_of_ocaml
 
 module Html = Dom_html
 let js = Js.string (* partial function, takes in string *)

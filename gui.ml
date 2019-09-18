@@ -1,6 +1,7 @@
 open Types
 open State
 open Interactions
+open Js_of_ocaml
 
 let canvas_width = 546.
 let canvas_height = 390.
@@ -987,7 +988,7 @@ let rec draw_player (context: Html.canvasRenderingContext2D Js.t) character_list
     | "Lyn" -> draw_lyn context h;draw_player context t
     | "Erk" -> draw_erk context h; draw_player context t
     | "Hector" -> draw_hector context h;draw_player context t
-    | "Archer" -> 
+    | "Archer" ->
         draw_archer context h;
         draw_player context t
     | _ -> ()
@@ -1695,7 +1696,7 @@ let draw_swordsman context enemy =
 
 (* [draw_mage context enemy] draws the mage sprite
  * [enemy] on the [context] *)
-let draw_mage context enemy = 
+let draw_mage context enemy =
   match ((!sync)) with
   | true ->
     let img = Html.createImg document in
@@ -1710,7 +1711,7 @@ let draw_mage context enemy =
 
 (* [draw_mage_boss context enemy] draws the mage boss sprite
  * [enemy] on the [context] *)
-let draw_mage_boss context enemy = 
+let draw_mage_boss context enemy =
   match ((!sync)) with
   | true ->
     let img = Html.createImg document in
@@ -1741,10 +1742,10 @@ let rec draw_enemies_helper context enemy_lst =
     | "Melee" ->
       draw_swordsman context enemy;
       draw_enemies_helper context t
-    | "Mage" -> 
+    | "Mage" ->
       draw_mage context enemy;
       draw_enemies_helper context t
-    | "Mage Boss" -> 
+    | "Mage Boss" ->
       draw_mage_boss context enemy;
       draw_enemies_helper context t
     | _ -> ()
@@ -1786,11 +1787,11 @@ let draw_lose_screen context =
 (***************** Draw transition screen ****************)
 (*********************************************************)
 
-(* [draw_transition_screen context state] draws the transition 
+(* [draw_transition_screen context state] draws the transition
  * screen on the [context]. The transitions screen occurs
- * between rounds when switching between Map1 and Map2. It 
+ * between rounds when switching between Map1 and Map2. It
  * also features a timer that counts down from 10 *)
-let draw_transition_screen context state = 
+let draw_transition_screen context state =
   if !transition < 0 then state.round <- false else
     let timer = !transition / 100 in
     context##fillStyle <- js "black";
@@ -1808,10 +1809,10 @@ let draw_transition_screen context state =
 (*********************************************************)
 
 (* [draw_welcome_screen context] draws the welcome screen
- * that will be displayed at the beginning of the game when 
+ * that will be displayed at the beginning of the game when
  * the html window is first loaded. This window will display
  * information about the game and directions *)
-let draw_welcome_screen context = 
+let draw_welcome_screen context =
   context##fillStyle <- js "black";
   context##fillRect (0.,0.,canvas_width,canvas_height);
   context##fillStyle <- js "white";
@@ -1867,12 +1868,12 @@ let draw_welcome_screen context =
 (*********************************************************)
 
 (* [draw_state] draws the the current [state] on the [context].
- * Also has a side affect of updating the global variable clock, 
+ * Also has a side affect of updating the global variable clock,
  * transition, and transition start *)
 let draw_state (context: Html.canvasRenderingContext2D Js.t) state =
   context##clearRect (0., 0., canvas_width, canvas_height);
   match state.welcome, state.round, state.won, state.lose with
-  | true, _, _, _ -> 
+  | true, _, _, _ ->
     draw_welcome_screen context;
   | false, true, _, _ ->
     transition_start:= true;
