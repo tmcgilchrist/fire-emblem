@@ -1,59 +1,58 @@
 open Types
 
-
 (** 
  *  [character] handles all the functions that involve reading and editing
  *  character values 
 *)
 
+val equipped : character -> item option
 (**
  *  [equipped] returns the character's equipped item
 *)
-val equipped : character -> item option
 
+val equippable : character -> item -> bool
 (**
  *  [equippable] returns whether or not a character can equip an item
 *)
-val equippable: character -> item -> bool
 
+val stat_up : character -> stat -> int -> unit
 (** 
  *  [stat_up] increases a stat by a certain amount
 *)
-val stat_up : character -> stat -> int -> unit
 
+val level_up : character -> unit
 (**
  *  level_up returns the character with its level increased and stats
  *  incremented.
 *)
-val level_up : character -> unit
 
+val update_health : character -> int -> unit
 (** 
  *  [update_health ch] will return the character [ch] with its health incremented
 *)
-val update_health : character -> int -> unit
 
+val update_character : character -> unit
 (**
  *  [update character] updates all the character  
 *)
-val update_character : character -> unit
 
+val add_item : character -> item -> unit
 (**
  *  [add_item] adds an item to a characters inventory. If there is no space
  *  then it does nothing
 *)
-val add_item : character -> item -> unit
 
+val remove_item : character -> int -> unit
 (**
  *  [remove_item] removes an item from a characters inventory 
-*)  
-val remove_item : character -> int -> unit
+*)
 
+val move_to_top : character -> int -> unit
 (**
  *  [move_to_top] moves an item to the top of the inventory 
 *)
-val move_to_top : character -> int -> unit
 
+val use : item option -> item option
 (**
  *  [use i] decrements the number of uses on an item by 1 
 *)
-val use : item option -> item option

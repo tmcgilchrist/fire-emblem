@@ -1,7 +1,6 @@
 open Types
 open Characters
 
-
 (**
  * Represents the three types of ways 1 round of combat can      * resolve.
 *)
@@ -17,7 +16,7 @@ let exp : combatResolutions list ref = ref []
  *  Represents the order in which combat encounters should be
  *  executed.
 *)
-let combatQ = Queue.create()
+let combatQ = Queue.create ()
 
 (**
  *  [survive d] is a function that checks if the character, [d],
@@ -26,8 +25,7 @@ let combatQ = Queue.create()
  *  - d is a valid character
  *  - i is an int
 *)
-let survive (d : character) (i : int) =
-  i > fst d.health
+let survive (d : character) (i : int) = i > fst d.health
 
 (**
  *  [penalty_helper p s] is a function that searches a list of
@@ -36,11 +34,10 @@ let survive (d : character) (i : int) =
  *  requires:
  *  - p is a (stat * (int * int)) list, but
 *)
-let rec penalty_helper (p: (stat * (int * int)) list) (s:stat) =
+let rec penalty_helper (p : (stat * (int * int)) list) (s : stat) =
   match p with
-  |[]   -> (0,0)
-  |h::t -> if fst h = s then snd h else
-      penalty_helper t s
+  | [] -> (0, 0)
+  | h :: t -> if fst h = s then snd h else penalty_helper t s
 
 (**
  *  [find_penalty a s] is a function that find the penalties for
@@ -50,10 +47,8 @@ let rec penalty_helper (p: (stat * (int * int)) list) (s:stat) =
  *  - [a] is a valid character.
  *  - [s] is a valid stat.
 *)
-let find_penalty (a: character) (s:stat) :int * int =
-  match equipped a with
-  |None -> (0, 0)
-  |Some x -> penalty_helper x.penalty s
+let find_penalty (a : character) (s : stat) : int * int =
+  match equipped a with None -> (0, 0) | Some x -> penalty_helper x.penalty s
 
 (**
  *  [damage a d] is a function that returns an int that represents
@@ -65,10 +60,10 @@ let find_penalty (a: character) (s:stat) :int * int =
 let damage a d =
   match equipped a with
   | None -> 0
-  | Some x ->
-    match x.wtype with
-    |Tome -> if a.atk - d.res < 0 then 0 else a.atk - d.res
-    |_ -> if a.atk - d.def < 0 then 0 else a.atk - d.def
+  | Some x -> (
+      match x.wtype with
+      | Tome -> if a.atk - d.res < 0 then 0 else a.atk - d.res
+      | _ -> if a.atk - d.def < 0 then 0 else a.atk - d.def)
 
 (**
  *  [distance a b] is a function that returns the distance from
@@ -78,8 +73,7 @@ let damage a d =
  *  - [b] is a valid character
 *)
 let distance a b =
-  abs (fst a.location - fst b.location) +
-  abs (snd a.location - snd b.location)
+  abs (fst a.location - fst b.location) + abs (snd a.location - snd b.location)
 
 (**
  *  [in_range a d] is a function that returns whether or not d is
@@ -90,9 +84,10 @@ let distance a b =
 *)
 let in_range a d =
   match equipped a with
-  |None   -> false
-  |Some x -> let l = distance a d in
-    l >= fst x.range && l <= snd x.range
+  | None -> false
+  | Some x ->
+      let l = distance a d in
+      l >= fst x.range && l <= snd x.range
 
 (**
  *  [kill_xp a d] changes the amount of xp character a has
@@ -108,21 +103,19 @@ let kill_xp a d =
     | 2 -> a.exp <- a.exp + 90
     | 3 -> a.exp <- a.exp + 80
     | 4 -> a.exp <- a.exp + 70
-    | x -> if x > 4 then a.exp <- a.exp + 60
-      else  a.exp <- a.exp + 100
+    | x -> if x > 4 then a.exp <- a.exp + 60 else a.exp <- a.exp + 100
   else
     match a.level - d.level with
     | -4 -> a.exp <- a.exp + 69
     | -3 -> a.exp <- a.exp + 59
     | -2 -> a.exp <- a.exp + 50
     | -1 -> a.exp <- a.exp + 42
-    |  0 -> a.exp <- a.exp + 35
-    |  1 -> a.exp <- a.exp + 29
-    |  2 -> a.exp <- a.exp + 22
-    |  3 -> a.exp <- a.exp + 14
-    |  4 -> a.exp <- a.exp + 5
-    |  x -> if x > 4 then a.exp <- a.exp + 1
-      else a.exp <- a.exp + 80
+    | 0 -> a.exp <- a.exp + 35
+    | 1 -> a.exp <- a.exp + 29
+    | 2 -> a.exp <- a.exp + 22
+    | 3 -> a.exp <- a.exp + 14
+    | 4 -> a.exp <- a.exp + 5
+    | x -> if x > 4 then a.exp <- a.exp + 1 else a.exp <- a.exp + 80
 
 (**
  *  [hit_xp a d] changes the amount of xp character a has
@@ -138,21 +131,19 @@ let hit_xp a d =
     | 2 -> a.exp <- a.exp + 36
     | 3 -> a.exp <- a.exp + 32
     | 4 -> a.exp <- a.exp + 28
-    | x -> if x > 4 then a.exp <- a.exp + 24
-      else a.exp <- a.exp + 40
+    | x -> if x > 4 then a.exp <- a.exp + 24 else a.exp <- a.exp + 40
   else
     match a.level - d.level with
     | -4 -> a.exp <- a.exp + 33
     | -3 -> a.exp <- a.exp + 29
     | -2 -> a.exp <- a.exp + 25
     | -1 -> a.exp <- a.exp + 21
-    |  0 -> a.exp <- a.exp + 17
-    |  1 -> a.exp <- a.exp + 13
-    |  2 -> a.exp <- a.exp + 9
-    |  3 -> a.exp <- a.exp + 5
-    |  4 -> a.exp <- a.exp + 1
-    |  x -> if x > 4 then a.exp <- a.exp + 1
-      else a.exp <- a.exp + 37
+    | 0 -> a.exp <- a.exp + 17
+    | 1 -> a.exp <- a.exp + 13
+    | 2 -> a.exp <- a.exp + 9
+    | 3 -> a.exp <- a.exp + 5
+    | 4 -> a.exp <- a.exp + 1
+    | x -> if x > 4 then a.exp <- a.exp + 1 else a.exp <- a.exp + 37
 
 (**
  *  [wexp_level_up c] returns a weapon level 1 higher than c
@@ -163,12 +154,12 @@ let hit_xp a d =
 *)
 let wexp_level_up c =
   match c with
-  |'e' -> 'd'
-  |'d' -> 'c'
-  |'c' -> 'b'
-  |'b' -> 'a'
-  |'a' -> 's'
-  |_ -> failwith "wexp_level_up invalid level"
+  | 'e' -> 'd'
+  | 'd' -> 'c'
+  | 'c' -> 'b'
+  | 'b' -> 'a'
+  | 'a' -> 's'
+  | _ -> failwith "wexp_level_up invalid level"
 
 (**
  *  [wexp_helper ty lst] is a function that awards the proper
@@ -181,13 +172,14 @@ let wexp_level_up c =
 *)
 let rec wexp_helper ty lst =
   match lst with
-  |[]              -> failwith "not in weapon type list"
-  |(wt, lv, xp)::t -> if wt = ty then
-                        (if lv = 's' then (wt, lv, xp)::t
-                        else if lv = 'a' && (xp + 5 > 100) then (wt, 's', 0)::t
-                        else if xp + 5 > 100 then (wt, wexp_level_up lv, xp + 5 - 100)::t
-                        else (wt, lv, xp+ + 5)::t)
-                      else wexp_helper ty t
+  | [] -> failwith "not in weapon type list"
+  | (wt, lv, xp) :: t ->
+      if wt = ty then
+        if lv = 's' then (wt, lv, xp) :: t
+        else if lv = 'a' && xp + 5 > 100 then (wt, 's', 0) :: t
+        else if xp + 5 > 100 then (wt, wexp_level_up lv, xp + 5 - 100) :: t
+        else (wt, lv, xp + 5) :: t
+      else wexp_helper ty t
 
 (**
  *  [award_wexp a] is a function that awards a with weapon exp
@@ -196,7 +188,8 @@ let rec wexp_helper ty lst =
  *  - [a] is a valid character
 *)
 let award_wexp a =
-  if a.allegiance = Player then a.wlevels <- wexp_helper (extract a.inv.(a.eqp)).wtype a.wlevels
+  if a.allegiance = Player then
+    a.wlevels <- wexp_helper (extract a.inv.(a.eqp)).wtype a.wlevels
   else ()
 
 (**
@@ -208,12 +201,12 @@ let award_wexp a =
  *  - [t] is a valid outcome
 *)
 let comp_outcome a t =
-  match a, t with
-  |Kill, _ -> a
-  |_, Kill -> t
-  |Hit, _ -> a
-  |_, Hit -> t
-  |_, _ -> a
+  match (a, t) with
+  | Kill, _ -> a
+  | _, Kill -> t
+  | Hit, _ -> a
+  | _, Hit -> t
+  | _, _ -> a
 
 (**
  *  [award_xp a d] awards experience to characters a and d after
@@ -225,11 +218,9 @@ let comp_outcome a t =
 let award_xp a d =
   let outcome = List.fold_left (fun a v -> comp_outcome a v) Miss !exp in
   match outcome with
-  |Kill -> if a.allegiance = Player then
-    kill_xp a d else kill_xp d a
-  |Hit -> if a.allegiance = Player then
-    hit_xp a d else hit_xp d a
-  |Miss -> ()
+  | Kill -> if a.allegiance = Player then kill_xp a d else kill_xp d a
+  | Hit -> if a.allegiance = Player then hit_xp a d else hit_xp d a
+  | Miss -> ()
 
 (**
  *  [resolveE a d] is a function that resolves the first round of
@@ -240,25 +231,23 @@ let award_xp a d =
  *  - [d] is a valid character
 *)
 let resolveE a d =
-  if (a.eqp = -1) then ()
-  else if (get_rng () + get_rng())/2 > a.hit - d.avoid then
-    a.inv.(a.eqp) <- (use (a.inv.(a.eqp)));
-  if get_rng () < a.crit - (d.lck * 2) then (update_health d (3 * (damage a d)))
-        else update_health d (damage a d);
-  if fst d.health <= 0 || fst a.health <= 0 then
-    Queue.clear combatQ;
-  if fst d.health = 0 && a.allegiance = Player then
-    exp := (Kill :: !exp);
-  if fst d.health != 0 && a.allegiance = Player then
-    exp := (Hit :: !exp);
-  a.inv.(a.eqp) <- (use (a.inv.(a.eqp)))
+  if a.eqp = -1 then ()
+  else if (get_rng () + get_rng ()) / 2 > a.hit - d.avoid then
+    a.inv.(a.eqp) <- use a.inv.(a.eqp);
+  if get_rng () < a.crit - (d.lck * 2) then update_health d (3 * damage a d)
+  else update_health d (damage a d);
+  if fst d.health <= 0 || fst a.health <= 0 then Queue.clear combatQ;
+  if fst d.health = 0 && a.allegiance = Player then exp := Kill :: !exp;
+  if fst d.health != 0 && a.allegiance = Player then exp := Hit :: !exp;
+  a.inv.(a.eqp) <- use a.inv.(a.eqp)
 
 (**
  *  [resovleQ ()] resolves the entire combatQ.
  *  requires: Nothing actually
 *)
 let rec resolveQ () =
-  if Queue.is_empty combatQ then () else
+  if Queue.is_empty combatQ then ()
+  else
     let round = Queue.pop combatQ in
     resolveE (fst round) (snd round);
     resolveQ ()
@@ -289,8 +278,10 @@ let combat a d =
   award_xp a d;
   award_wexp a;
   award_wexp d;
-  level_up a; update_character a;
-  level_up d; update_character d
+  level_up a;
+  update_character a;
+  level_up d;
+  update_character d
 
 (**
  *  [heal a t i] is a function that heals a character, t, and
@@ -303,13 +294,13 @@ let combat a d =
 *)
 let heal a t i =
   match a.inv.(i) with
-  |None -> failwith "No staff"
-  |Some x ->
-    let heal_amount = - (a.mag + x.mgt) in
-  a.inv.(i) <- use a.inv.(i);
-  a.exp <- a.exp + 12;
-  level_up a;
-  update_health t heal_amount
+  | None -> failwith "No staff"
+  | Some x ->
+      let heal_amount = -(a.mag + x.mgt) in
+      a.inv.(i) <- use a.inv.(i);
+      a.exp <- a.exp + 12;
+      level_up a;
+      update_health t heal_amount
 
 (**
  *  [consumable a i] is a function that uses a potion to heal
@@ -321,10 +312,11 @@ let heal a t i =
 *)
 let consumable a i =
   match a.inv.(i) with
-  |None -> failwith "No item"
-  |Some x -> let heal_amount = -(x.mgt) in
-    a.inv.(i) <- use a.inv.(i);
-    update_health a heal_amount
+  | None -> failwith "No item"
+  | Some x ->
+      let heal_amount = -x.mgt in
+      a.inv.(i) <- use a.inv.(i);
+      update_health a heal_amount
 
 (**
  *  [chest c t i] is a fuction that takes an item from a chest.
@@ -338,9 +330,11 @@ let consumable a i =
 *)
 let chest c t i =
   match t with
-  |Chest (Some x) -> c.inv.(i) <- use c.inv.(i); add_item c x
-  |Chest (None) -> failwith "empty chest"
-  |_ -> failwith "Opening nonchest"
+  | Chest (Some x) ->
+      c.inv.(i) <- use c.inv.(i);
+      add_item c x
+  | Chest None -> failwith "empty chest"
+  | _ -> failwith "Opening nonchest"
 
 (**
  *  [door c t i] is a function that opens a door.
@@ -349,8 +343,7 @@ let chest c t i =
  *  - [t] is a valid tile with a door on it
  *  - [i] is a the index of the key used to open the door
 *)
-let door c t i =
-  if t = Door then c.inv.(i) <- use c.inv.(i)
+let door c t i = if t = Door then c.inv.(i) <- use c.inv.(i)
 
 (**
  *  [village c t] is a function that visits a village
@@ -363,9 +356,9 @@ let door c t i =
 *)
 let village c t =
   match t with
-  |Village (Some x) -> add_item c x
-  |Village (None) -> failwith "visited village"
-  |_ -> failwith "visiting nonvillage"
+  | Village (Some x) -> add_item c x
+  | Village None -> failwith "visited village"
+  | _ -> failwith "visiting nonvillage"
 
 (**
  *  [trade c1 c2 i1 i2] is a function that swaps and item, i1,
