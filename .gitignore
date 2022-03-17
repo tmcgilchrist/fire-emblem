@@ -27,3 +27,5 @@ _opam/
 # direnv setup
 .envrc
 /_opam
+*.bc-for-jsoo
+/src/main.bc.js

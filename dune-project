@@ -7,5 +7,6 @@
  (name fire-emblem)
  (synopsis "Fire-Emblem is a recreation of the game boy game of the same name.")
  (depends 
+  (ocaml (>= 4.13.1))
    js_of_ocaml
    js_of_ocaml-ppx))

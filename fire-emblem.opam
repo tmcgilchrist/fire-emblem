@@ -4,6 +4,7 @@ synopsis:
   "Fire-Emblem is a recreation of the game boy game of the same name."
 depends: [
   "dune" {>= "2.9"}
+  "ocaml" {>= "4.13.1"}
   "js_of_ocaml"
   "js_of_ocaml-ppx"
   "odoc" {with-doc}
