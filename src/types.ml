@@ -60,7 +60,6 @@ type difficulty = Easy|Normal|Hard|Insane
 let extract = function
   |(Some c) ->c
   |None -> failwith "Impossible"
-let seed = 10
 
 let init_rng = Random.init 10
 

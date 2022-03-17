@@ -1,0 +1,7 @@
+(executable
+ (flags
+  (:standard -w -27-32-33))
+ (promote)
+ (name main)
+ (modes js)
+ (preprocess (pps js_of_ocaml-ppx)))

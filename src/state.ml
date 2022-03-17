@@ -311,7 +311,7 @@ let rec add_f (tile:tile) (i:int) (f :( tile * int) list) : (tile * int) list=
  *  - [f] is a valid frontier set
  *  See dijkstra's_helper for details.
 *)
-let rec check_dir mov d t map s c f =
+let check_dir mov d t map s c f =
   let mapg = map.grid in
   let mov_dir = movable t d mov map c in
   let x = fst t.coordinate in
@@ -338,7 +338,7 @@ let rec check_dir mov d t map s c f =
  *  - [f] is a valid frontier set
  *  - [c] is a valid character.
 *)
-let rec check_surround s t m map f c =
+let check_surround s t m map f c =
   f
   |> check_dir m South t map s c
   |> check_dir m East t map s c

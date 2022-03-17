@@ -99,7 +99,7 @@ let rec check_settled (s : tile list) (tl : tile) =
 
 (*[check_dir] ensures movement in a certain direction is valid and adds the
 *node to the frontier if it is viable or returns the same frontier if its not*)
-let rec check_dir (d:direction) (t:tile) (map:map) (s: tile list) (f:(tile * int) list): ( tile * int) list =
+let check_dir (d:direction) (t:tile) (map:map) (s: tile list) (f:(tile * int) list): ( tile * int) list =
  let mapg = map.grid in
  match t.coordinate with
  |(x, y) ->
@@ -124,7 +124,7 @@ let rec check_dir (d:direction) (t:tile) (map:map) (s: tile list) (f:(tile * int
 
 (*[check_surround] checks movement in all directions of a given coordinate
 *to expand the frontier set*)
-let rec check_surround s t map f:(tile * int) list =
+let check_surround s t map f:(tile * int) list =
  f
  |> check_dir South t map s
  |> check_dir East t map s

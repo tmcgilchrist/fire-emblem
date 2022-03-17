@@ -1,5 +1,4 @@
 open Types
-open Interactions
 
 (* * AI Difficulty Behavior Detailed Below:
 * Insane -> Omniscient unit that will track and move towards nearest player

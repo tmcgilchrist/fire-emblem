@@ -5,12 +5,9 @@ open Js_of_ocaml
 module Html = Dom_html
 let js = Js.string
 
-
-
-
 let keydown event =
   Dom.preventDefault event;
-  let () =match event##keyCode with
+  let () = match event##.keyCode with
       |90 ->input := A (* Mapped to Z used to select units *)
       |88 ->input := B (* Mapped to X used to deselect *)
       |65 ->input := LT

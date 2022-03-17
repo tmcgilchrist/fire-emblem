@@ -1,6 +1,3 @@
-
-
-
 (** This module handles all of the types that we need for this project*)
 type class' = Swordsman | Archer | Mage | Paladin | Lord | PRider
 

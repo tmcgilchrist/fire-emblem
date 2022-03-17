@@ -1,0 +1,13 @@
+; TODO Make these work by splitting main program into executable plus library
+; (tests
+;  (names test_state)
+;  (package fire-emblem)
+;  (modules test_state)
+;  (libraries fire-emblem ounit))
+
+; (rule
+;  (alias runtest)
+;  (deps test_state.exe)
+;  (action
+;   (run %{deps})))
+

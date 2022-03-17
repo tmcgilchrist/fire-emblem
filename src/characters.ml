@@ -228,7 +228,7 @@ let rec update_character c =
  *  - [i] is an int from 0 to 4.
  *  Has unspecified behaviour if passed a number not in that range.
 *)  
-let rec remove_item a i =
+let remove_item a i =
   a.inv.(i) <- None
 
 (**
